@@ -16,6 +16,7 @@
         <module>ct-analysis</module>
         <module>ct-cache</module>
         <module>ctt-web</module>
+        <module>ct-doc</module>
     </modules>
 
 

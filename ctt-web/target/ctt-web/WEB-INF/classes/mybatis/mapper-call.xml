@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.ct.web.dao.CallLogDao" >
+
+    <select id="queryMonthDates" resultType="com.atguigu.ct.web.bean.CallLog">
+        select * from ct_call where telId=(
+            select id from ct_user where tel=#{tel}
+        ) and dateId in (
+            select id from ct_date where year=#{callTime} and month !='' and day =''
+        )
+    </select>
+</mapper>
