@@ -6,6 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -16,9 +17,9 @@
     <link href="/bootstrap/css/bootstrap.css" rel="stylesheet">
 </head>
 <body>
-<body>
+data：${callLogs}
 <%--图标组件容器--%>
-<div id="main" style="width: 600px;height:400px;"></div>
+<div id="main" style="width: 800px;height:600px;"></div>
 <script src="/jquery/jquery-2.1.1.min.js"></script>
 <script src="/bootstrap/js/bootstrap.js"></script>
 <script src="/jquery/echarts.min.js"></script>
@@ -28,23 +29,84 @@
     var myChart = echarts.init(document.getElementById('main'));
 
     // 指定图表的配置项和数据
-    var option = {
+    option = {
         title: {
-            text: 'ECharts 入门示例'
+            text: '用户通话统计',
+            subtext: '纯属虚构'
         },
-        tooltip: {},
+        tooltip: {
+            trigger: 'axis'
+        },
         legend: {
-            data:['销量']
+            data: ['通话次数', '通话时长']
         },
-        xAxis: {
-            data: ["衬衫","羊毛衫","雪纺衫","裤子","高跟鞋","袜子"]
+        toolbox: {
+            show: true,
+            feature: {
+                dataView: {show: true, readOnly: false},
+                magicType: {show: true, type: ['line', 'bar']},
+                restore: {show: true},
+                saveAsImage: {show: true}
+            }
         },
-        yAxis: {},
-        series: [{
-            name: '销量',
-            type: 'bar',
-            data: [5, 20, 36, 10, 10, 20]
-        }]
+        calculable: true,
+        xAxis: [
+            {
+                type: 'category',
+                data: [
+                    <c:forEach items="${callLogs}" var="calllog">
+                        ${calllog.dateId},
+                    </c:forEach>
+                ]
+            }
+        ],
+        yAxis: [
+            {
+                type: 'value'
+            }
+        ],
+        series: [
+            {
+                name: '通话次数',
+                type: 'bar',
+                data: [
+                    <c:forEach items="${callLogs}" var="calllog">
+                        ${calllog.sumCall},
+                    </c:forEach>
+                ],
+                markPoint: {
+                    data: [
+                        {type: 'max', name: '最大值'},
+                        {type: 'min', name: '最小值'}
+                    ]
+                },
+                markLine: {
+                    data: [
+                        {type: 'average', name: '平均值'}
+                    ]
+                }
+            },
+            {
+                name: '通话时长',
+                type: 'bar',
+                data: [
+                    <c:forEach items="${callLogs}" var="calllog">
+                        ${calllog.sumDuration},
+                    </c:forEach>
+                ],
+                markPoint: {
+                    data: [
+                        {name: '年最高', value: 182.2, xAxis: 7, yAxis: 183},
+                        {name: '年最低', value: 2.3, xAxis: 11, yAxis: 3}
+                    ]
+                },
+                markLine: {
+                    data: [
+                        {type: 'average', name: '平均值'}
+                    ]
+                }
+            }
+        ]
     };
 
     // 使用刚指定的配置项和数据显示图表。
